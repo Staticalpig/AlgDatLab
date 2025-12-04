@@ -88,7 +88,7 @@ public:
             std::cout << currentNode->name << " ";
 
             if (!hasPastFirstLayer) {
-                adjacency_map[currentNode->name] = UNKNOWN;
+                adjacency_map[currentNode->name] = INIT;
             }
 
             for (Node* neighbor : currentNode->neighbors) {
@@ -137,7 +137,7 @@ public:
 
 int main() {
 
-    const Graph graph(5);
+    const Graph graph(7);
 
 
     graph.addEdge(0, 1);
@@ -149,6 +149,10 @@ int main() {
     graph.addEdge(2, 3);
 
     graph.addEdge(3, 4);
+
+    graph.addEdge(4, 5);
+
+    graph.addEdge(0, 6);
 
     graph.printGraph();
 
