@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <queue>
 #include <unordered_map>
 #include <unordered_set>
@@ -7,7 +8,9 @@
 
 enum node_adjacency_types {
     FRIEND,
-    ADVERSARY
+    ADVERSARY,
+    UNKNOWN,
+    INIT
 };
 
 std::string node_adjacency_type_to_string(const node_adjacency_types type) {
@@ -16,6 +19,9 @@ std::string node_adjacency_type_to_string(const node_adjacency_types type) {
             return "FRIEND";
         case ADVERSARY:
             return "ADVERSARY";
+        case INIT:
+            return "INIT";
+        case UNKNOWN:
         default:
             return "UNKNOWN";
     }
@@ -37,22 +43,32 @@ class Graph {
 private:
     std::vector<Node*> nodes;
 public:
+    explicit Graph(const int initial_size = 0) {
+        for (int i = 0; i < initial_size; ++i) {
+            nodes.push_back(new Node(i));
+        }
+    }
     ~Graph() {
         for (const auto node : nodes) {
             delete node;
         }
     }
 
-    Node* addNode(const int name) {
-        const auto newNode = new Node(name);
-        nodes.push_back(newNode);
-        return newNode; // So we can add edges later
+    void addEdge(const int from, const int to) const {
+        const auto size = nodes.size();
+        if (from < 0 || from >= size || nodes.at(from) == nullptr) return;
+        if (to < 0 || to >= size || nodes.at(to) == nullptr) return;
+
+
+        nodes.at(from)->addEdge(nodes.at(to));
     }
 
-    void BFS(Node* startNode) const {
-        if (nodes.empty()) return;
-        if (startNode == nullptr) return;
 
+    void BFS(const int initNode) const {
+        if (nodes.empty()) return;
+        if (initNode < 0 || initNode >= nodes.size() || nodes.at(initNode) == nullptr ) return;
+
+        Node* startNode = nodes.at(initNode);
 
         std::unordered_set<int> visited;
         std::unordered_map<int, node_adjacency_types> adjacency_map;
@@ -64,28 +80,35 @@ public:
 
         std::cout << "\nBFS Traversal Order: ";
 
+        bool hasPastFirstLayer = false;
         while (!q.empty()) {
             const Node* currentNode = q.front();
             q.pop();
 
             std::cout << currentNode->name << " ";
 
-            const node_adjacency_types currentType = adjacency_map[currentNode->name];
-
-            node_adjacency_types nextType;
-            if (currentType == FRIEND) {
-                nextType = ADVERSARY;
-            } else {
-                nextType = FRIEND;
+            if (!hasPastFirstLayer) {
+                adjacency_map[currentNode->name] = UNKNOWN;
             }
 
             for (Node* neighbor : currentNode->neighbors) {
                 if (!visited.contains(neighbor->name)) {
                     visited.insert(neighbor->name);
-                    adjacency_map[neighbor->name] = nextType;
+
+                    if (adjacency_map.empty()) {
+                        adjacency_map[currentNode->name] = INIT;
+                    } else {
+                        adjacency_map[neighbor->name] =
+                            hasPastFirstLayer ? (adjacency_map[currentNode->name] == FRIEND ? ADVERSARY : FRIEND)
+                                : UNKNOWN;
+                    }
+
+
                     q.push(neighbor);
                 }
             }
+
+            hasPastFirstLayer = true;
         }
 
 
@@ -114,25 +137,22 @@ public:
 
 int main() {
 
-    Graph graph;
-
-    Node* node0 = graph.addNode(0);
-    Node* node1 = graph.addNode(1);
-    Node* node2 = graph.addNode(2);
-    Node* node3 = graph.addNode(3);
+    const Graph graph(5);
 
 
-    node0->addEdge(node1);
-    node1->addEdge(node2);
-    node1->addEdge(node3);
+    graph.addEdge(0, 1);
 
-    node2->addEdge(node1);
-    node2->addEdge(node3);
+    graph.addEdge(1, 2);
+    graph.addEdge(1, 3);
 
+    graph.addEdge(2, 1);
+    graph.addEdge(2, 3);
+
+    graph.addEdge(3, 4);
 
     graph.printGraph();
 
-    graph.BFS(node0);
+    graph.BFS(0);
 
 
     return 0;
