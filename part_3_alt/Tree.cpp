@@ -26,7 +26,7 @@ int Tree::getWeight() const {
 }
 
 void Tree::printTree(vector<char>& bitString) const {
-    if (left == NULL && right == NULL) {
+    if (left == NULL && right == nullptr) {
         // Leaf node
         for (char bit : bitString) {
             cout << bit;
@@ -44,4 +44,4 @@ void Tree::printTree(vector<char>& bitString) const {
         right->printTree(bitString);
         bitString.pop_back();
     }
-};
+}

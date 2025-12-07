@@ -3,4 +3,4 @@ project(part_3_alt)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(part_3_alt main.cpp)
+add_executable(part_3_alt main.cpp Tree.cpp)
