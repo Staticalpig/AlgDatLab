@@ -16,7 +16,12 @@ int main(){
 
     std::unordered_map<char, int> freqTable = createLetterFreqTable(input);
 
-    printLetterFreqTable(freqTable);
+    //printLetterFreqTable(freqTable);
+    TreeWrapper huffmanTree = buildTrees(freqTable);
+
+    //print the result
+    std::vector<char> bitString;
+    //huffmanTree.tree->printTree(bitString);
 
     return 0;
 }
