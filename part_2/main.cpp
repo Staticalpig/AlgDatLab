@@ -95,11 +95,11 @@ public:
                 if (!visited.contains(neighbor->name)) {
                     visited.insert(neighbor->name);
 
+                    adjacency_map[neighbor->name] = (currentType == FRIEND) ? ADVERSARY : FRIEND;
+
+                    // Make the first layer FRIEND(s)
                     if (currentType == INIT) {
-                        // choose FRIEND for the first layer after INIT
                         adjacency_map[neighbor->name] = FRIEND;
-                    } else {
-                        adjacency_map[neighbor->name] = (currentType == FRIEND) ? ADVERSARY : FRIEND;
                     }
 
                     q.push(neighbor);
