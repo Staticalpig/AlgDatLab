@@ -9,7 +9,6 @@
 enum node_adjacency_types {
     FRIEND,
     ADVERSARY,
-    UNKNOWN,
     INIT
 };
 
@@ -21,7 +20,6 @@ std::string node_adjacency_type_to_string(const node_adjacency_types type) {
             return "ADVERSARY";
         case INIT:
             return "INIT";
-        case UNKNOWN:
         default:
             return "UNKNOWN";
     }
@@ -67,9 +65,9 @@ public:
     }
 
 
-    void BFS(const int initNode) const {
+  void BFS(const int initNode) const {
         if (nodes.empty()) return;
-        if (initNode < 0 || initNode >= nodes.size() || nodes.at(initNode) == nullptr) return;
+        if (initNode < 0 || initNode >= static_cast<int>(nodes.size()) || nodes.at(initNode) == nullptr) return;
 
         Node *startNode = nodes.at(initNode);
 
@@ -81,38 +79,32 @@ public:
         q.push(startNode);
         visited.insert(startNode->name);
 
+        adjacency_map[startNode->name] = INIT;
+
         std::cout << "\nBFS Traversal Order: ";
 
-        bool hasPastFirstLayer = false;
         while (!q.empty()) {
             const Node *currentNode = q.front();
             q.pop();
 
             std::cout << currentNode->name << " ";
 
-            if (!hasPastFirstLayer) {
-                adjacency_map[currentNode->name] = INIT;
-            }
+            const node_adjacency_types currentType = adjacency_map[currentNode->name];
 
             for (Node *neighbor: currentNode->neighbors) {
                 if (!visited.contains(neighbor->name)) {
                     visited.insert(neighbor->name);
 
-                    if (adjacency_map.empty()) {
-                        adjacency_map[currentNode->name] = INIT;
+                    if (currentType == INIT) {
+                        // choose FRIEND for the first layer after INIT
+                        adjacency_map[neighbor->name] = FRIEND;
                     } else {
-                        adjacency_map[neighbor->name] =
-                                hasPastFirstLayer
-                                    ? (adjacency_map[currentNode->name] == FRIEND ? ADVERSARY : FRIEND)
-                                    : UNKNOWN;
+                        adjacency_map[neighbor->name] = (currentType == FRIEND) ? ADVERSARY : FRIEND;
                     }
-
 
                     q.push(neighbor);
                 }
             }
-
-            hasPastFirstLayer = true;
         }
 
 
