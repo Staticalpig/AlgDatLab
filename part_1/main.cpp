@@ -9,11 +9,10 @@ std::vector<int> BucketSort(std::vector<int> &v);
 
 
 int main() {
-    std::vector v = {20, 20, 1, 25, 1, 1, 2, 3};    //previously called "data"
+    std::vector v = {10, 1, 12, 1, 10, 1, 5};    //previously called "data"
     std::vector<int> w = BucketSort(v); //0(n + k) from BucketSort. previously called "sorted"
-    //std::cout << w.size() << std::endl;
+
     std::cout << "    Use 'w' to write out the vector 'v' in a sorted order:" << std::endl;
-    
     for (int i = 0; i < w.size(); i++) {
         for(int j = w[i]; j > 0; j--){
             std::cout << i <<" ";
@@ -21,6 +20,7 @@ int main() {
     }
     std::cout << std::endl;
     //testing
+    printVector(w);
     insertionSort(w); //gets 'sorted' which is size of k, insertion sort is O(k^2) in worst case. O(k^2) > O(n + k)
     printVector(w);
 
