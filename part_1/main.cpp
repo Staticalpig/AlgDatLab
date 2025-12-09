@@ -4,28 +4,25 @@
 #include <vector>
 
 void insertionSort(std::vector<int> &v);
-
 void printVector(const std::vector<int> &v);
-
 std::vector<int> BucketSort(std::vector<int> &v);
 
 
 int main() {
-    std::vector data = {20, 20, 1, 25, 0, 0, 0, 0};
-    std::vector<int> sorted = BucketSort(data); //0(n + k) from BucketSort
-
-    std::cout << sorted.size() << std::endl;
-    std::cout << "[POS]:[AMOUNT]" << std::endl;
-
-    for (int i = 0; i < sorted.size(); ++i) {
-        std::cout << std::format("{}:{}\n", i, sorted[i]);
+    std::vector v = {20, 20, 1, 25, 1, 1, 2, 3};    //previously called "data"
+    std::vector<int> w = BucketSort(v); //0(n + k) from BucketSort. previously called "sorted"
+    //std::cout << w.size() << std::endl;
+    std::cout << "    Use 'w' to write out the vector 'v' in a sorted order:" << std::endl;
+    
+    for (int i = 0; i < w.size(); i++) {
+        for(int j = w[i]; j > 0; j--){
+            std::cout << i <<" ";
+        }
     }
     std::cout << std::endl;
-
     //testing
-    //printVector(sorted);
-    insertionSort(sorted); //gets 'sorted' which is size of k, insertion sort is O(k^2) in worst case. O(k^2) > O(n + k)
-    printVector(sorted);
+    insertionSort(w); //gets 'sorted' which is size of k, insertion sort is O(k^2) in worst case. O(k^2) > O(n + k)
+    printVector(w);
 
     return 0;
 }
@@ -35,16 +32,13 @@ std::vector<int> BucketSort(std::vector<int> &v) {
         // O(1)
         return {};
     }
-
     const int k = *std::ranges::max_element(v); //O(n)
-
     std::vector<int> w = std::vector(k + 1, 0); //O(k)
 
     for (const int i: v) {
         //O(n)
         w[i] += 1; //O(1) ish O(1N)
     }
-
     return w; //Overall complexity: O(n + k)
 }
 
@@ -60,7 +54,7 @@ void insertionSort(std::vector<int> &v) {
             j--;
         }
         v[j + 1] = key; // O(1) ?
-        printVector(v);
+        //printVector(v);
     }
 }
 
