@@ -33,7 +33,7 @@ public:
     explicit Node(const int name) : name(name) {
     }
 
-    void addEdge(Node *neighbor) {
+    void add_edge(Node *neighbor) {
         neighbors.push_back(neighbor);
     }
 };
@@ -55,50 +55,50 @@ public:
         }
     }
 
-    void addEdge(const int from, const int to) const {
+    void add_edge(const int from, const int to) const {
         const auto size = nodes.size();
         if (from < 0 || from >= size || nodes.at(from) == nullptr) return;
         if (to < 0 || to >= size || nodes.at(to) == nullptr) return;
 
 
-        nodes.at(from)->addEdge(nodes.at(to));
+        nodes.at(from)->add_edge(nodes.at(to));
     }
 
 
-  void BFS(const int initNode) const {
+  void BFS(const int init_node) const {
         if (nodes.empty()) return;
-        if (initNode < 0 || initNode >= static_cast<int>(nodes.size()) || nodes.at(initNode) == nullptr) return;
+        if (init_node < 0 || init_node >= static_cast<int>(nodes.size()) || nodes.at(init_node) == nullptr) return;
 
-        Node *startNode = nodes.at(initNode);
+        Node *start_node = nodes.at(init_node);
 
         std::unordered_set<int> visited;
         std::unordered_map<int, node_adjacency_types> adjacency_map;
 
         std::queue<Node *> q;
 
-        q.push(startNode);
-        visited.insert(startNode->name);
+        q.push(start_node);
+        visited.insert(start_node->name);
 
-        adjacency_map[startNode->name] = INIT;
+        adjacency_map[start_node->name] = INIT;
 
         std::cout << "\nBFS Traversal Order: ";
 
         while (!q.empty()) {
-            const Node *currentNode = q.front();
+            const Node *current_node = q.front();
             q.pop();
 
-            std::cout << currentNode->name << " ";
+            std::cout << current_node->name << " ";
 
-            const node_adjacency_types currentType = adjacency_map[currentNode->name];
+            const node_adjacency_types current_type = adjacency_map[current_node->name];
 
-            for (Node *neighbor: currentNode->neighbors) {
+            for (Node *neighbor: current_node->neighbors) {
                 if (!visited.contains(neighbor->name)) {
                     visited.insert(neighbor->name);
 
-                    adjacency_map[neighbor->name] = (currentType == FRIEND) ? ADVERSARY : FRIEND;
+                    adjacency_map[neighbor->name] = (current_type == FRIEND) ? ADVERSARY : FRIEND;
 
                     // Make the first layer FRIEND(s)
-                    if (currentType == INIT) {
+                    if (current_type == INIT) {
                         adjacency_map[neighbor->name] = FRIEND;
                     }
 
@@ -114,7 +114,7 @@ public:
     }
 
 
-    void printGraph() const {
+    void print_graph() const {
         for (const auto node: nodes) {
             std::cout << "Node " << node->name << " has neighbors: ";
             if (node->neighbors.empty()) {
@@ -132,21 +132,21 @@ int main() {
     const Graph graph(7);
 
 
-    graph.addEdge(0, 1);
+    graph.add_edge(0, 1);
 
-    graph.addEdge(1, 2);
-    graph.addEdge(1, 3);
+    graph.add_edge(1, 2);
+    graph.add_edge(1, 3);
 
-    graph.addEdge(2, 1);
-    graph.addEdge(2, 3);
+    graph.add_edge(2, 1);
+    graph.add_edge(2, 3);
 
-    graph.addEdge(3, 4);
+    graph.add_edge(3, 4);
 
-    graph.addEdge(4, 5);
+    graph.add_edge(4, 5);
 
-    graph.addEdge(0, 6);
+    graph.add_edge(0, 6);
 
-    graph.printGraph();
+    graph.print_graph();
 
     graph.BFS(0);
 
